@@ -39,4 +39,4 @@ push-hub:
 	huggingface-cli upload kingabzpro/Drug-Classification ./Model /Model --repo-type=space --commit-message="Sync Model"
 	huggingface-cli upload kingabzpro/Drug-Classification ./Results /Metrics --repo-type=space --commit-message="Sync Metrics"
 
-deploy: hf-login push-hub
+deploy: install hf-login push-hub
