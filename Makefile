@@ -16,12 +16,15 @@ eval:
 	cml comment create report.md
 
 update-branch:
-	@if [ -z "$(USER_NAME)" ] || [ -z "$(USER_EMAIL)" ]; then \
-		echo "Error: USER_NAME and USER_EMAIL must be provided"; \
-		echo "Usage: make update-branch USER_NAME='Your Name' USER_EMAIL='your@email.com'"; \
-		exit 1; \
-	fi
-	git config --global user.name $(USER_NAME)
-	git config --global user.email $(USER_EMAIL)
-	git commit -am "Update with new results" || true
+	@USER_NAME=$(USER_NAME); \
+	USER_EMAIL=$(USER_EMAIL); \
+	if [ -z "$$USER_NAME" ]; then \
+		USER_NAME=$$(git config --global user.name || echo "CI User"); \
+	fi; \
+	if [ -z "$$USER_EMAIL" ]; then \
+		USER_EMAIL=$$(git config --global user.email || echo "ci@example.com"); \
+	fi; \
+	git config --global user.name "$$USER_NAME"; \
+	git config --global user.email "$$USER_EMAIL"; \
+	git commit -am "Update with new results" || true; \
 	git push --force origin HEAD:update || echo "No changes to push"
