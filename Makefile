@@ -34,8 +34,10 @@ hf-login:
 	git switch update
 
 push-hub:
-	HF_TOKEN=$(HF) python -m huggingface_hub._snapshot_download upload kingabzpro/Drug-Classification ./APP --repo-type=space --commit-message="Sync App files"
-	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Model', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Model')"
-	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Results', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Metrics')"
+	@echo "Uploading to Hugging Face Space..."
+	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./APP', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync App files')" || echo "Failed to upload APP folder"
+	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Model', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Model')" || echo "Failed to upload Model folder"
+	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Results', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Metrics')" || echo "Failed to upload Results folder"
+	@echo "Upload complete!"
 
 deploy: install hf-login push-hub
