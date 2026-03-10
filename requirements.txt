@@ -1,0 +1,6 @@
+gradio
+skops
+black
+scikit-learn
+pandas
+numpy
