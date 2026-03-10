@@ -32,11 +32,10 @@ update-branch:
 hf-login:
 	git pull origin update
 	git switch update
-	python -m huggingface_hub.cli login --token $(HF) --add-to-git-credential
 
 push-hub:
-	python -m huggingface_hub.cli upload kingabzpro/Drug-Classification ./APP --repo-type=space --commit-message="Sync App files"
-	python -m huggingface_hub.cli upload kingabzpro/Drug-Classification ./Model /Model --repo-type=space --commit-message="Sync Model"
-	python -m huggingface_hub.cli upload kingabzpro/Drug-Classification ./Results /Metrics --repo-type=space --commit-message="Sync Metrics"
+	HF_TOKEN=$(HF) python -m huggingface_hub._snapshot_download upload kingabzpro/Drug-Classification ./APP --repo-type=space --commit-message="Sync App files"
+	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Model', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Model')"
+	HF_TOKEN=$(HF) python -c "from huggingface_hub import HfApi; api = HfApi(token='$(HF)'); api.upload_folder(folder_path='./Results', repo_id='kingabzpro/Drug-Classification', repo_type='space', commit_message='Sync Metrics')"
 
 deploy: install hf-login push-hub
